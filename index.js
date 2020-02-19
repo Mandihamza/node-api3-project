@@ -1,7 +1,11 @@
 const express = require("express")
 
-const welcomeRouter = require("./welcome/welcome-router.js")
+//middlewares
 const logger = require("./middleware/logger.js")
+
+//routes
+const welcomeRouter = require("./welcome/welcome-router.js")
+const usersRouter = require("./users/userRouter")
 
 const server = express()
 const port = 4000
@@ -10,6 +14,7 @@ server.use(logger)
 server.use(express.json())
 
 server.use("/", welcomeRouter)
+server.use("/api/users", usersRouter)
 
 server.use((req, res) => {
 	res.status(404).json({
