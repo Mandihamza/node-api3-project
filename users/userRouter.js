@@ -23,8 +23,15 @@ router.get('/', (req, res, next) => {
   });
 });
 
-router.get('/:id', (req, res) => {
-
+router.get('/:id', (req, res, next) => {
+  db.getById(req.params.id)
+  .then((users) => {
+    res
+    .status(200)
+    .json(users)
+  }).catch((err) => {
+    next()
+  });
 });
 
 router.get('/:id/posts', (req, res) => {
