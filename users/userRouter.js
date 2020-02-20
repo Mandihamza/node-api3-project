@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => {
     .json(users)
   }).catch((err) => {
     //console.log(err)
-    res.status(500).json({ message: "Error retrieving the hubs"})
+    res.status(500).json({ message: "Error retrieving the users"})
     next()
   });
 });
@@ -30,12 +30,23 @@ router.get('/:id', (req, res, next) => {
     .status(200)
     .json(users)
   }).catch((err) => {
+    res.status(500).json({ message: "Error retrieving the user"})
     next()
   });
 });
 
-router.get('/:id/posts', (req, res) => {
-  
+router.get('/:id/posts', (req, res, next) => {
+  db.getUserPosts(req.params.id)
+  .then(posts => {
+    res
+    .status(200)
+    .json(posts)
+  }).catch(err => {
+    res.status(500).json({
+      message: 'Error getting the messages for the specified user'
+    })
+    next()
+  });
 });
 
 router.delete('/:id', (req, res) => {
