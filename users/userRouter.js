@@ -23,16 +23,8 @@ router.get('/', (req, res, next) => {
   });
 });
 
-router.get('/:id', (req, res, next) => {
-  db.getById(req.params.id)
-  .then((users) => {
-    res
-    .status(200)
-    .json(users)
-  }).catch((err) => {
-    res.status(500).json({ message: "Error retrieving the user"})
-    next()
-  });
+router.get('/:id', validateUserId(), (req, res) => {
+  res.status(200).json(req.user)
 });
 
 router.get('/:id/posts', (req, res, next) => {
@@ -87,10 +79,26 @@ router.put('/:id', (req, res, next) => {
 
 //custom middleware
 
-function validateUserId(req, res, next) {
-  
+function validateUserId() {
+    return (req, res, next) => {
+      db.getById(req.params.id)
+      .then((user) => {
+        if(user) {
+          req.user = user
+          next()
+        } else {
+          res.status(404).json({
+            message: "User not found"
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+          message: "Error retrieving the user"
+        })
+      });
+  }
 }
-
 function validateUser(req, res, next) {
   
 }
